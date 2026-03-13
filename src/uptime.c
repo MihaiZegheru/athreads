@@ -11,6 +11,10 @@ static void (*s_events[EVENTS_COUNT])(void);
 static uint32_t s_event_delays[EVENTS_COUNT];
 static uint8_t s_event_count = 0;
 
+/**
+ * Timer2 Compare Match A interrupt service routine. This is called every 1 ms.
+ * It increments the uptime counter and checks if any registered events need to be triggered.
+ */
 ISR(TIMER2_COMPA_vect) {
     g_uptime_ms++;
 
@@ -21,6 +25,12 @@ ISR(TIMER2_COMPA_vect) {
     }
 }
 
+/**
+ * Initialize the timer with:
+ * - CTC mode
+ * - Prescaler of 64
+ * - Compare match value of 249 (for 1 ms intervals at 16 MHz clock)
+ */
 void uptime_init(void) {
     TCCR2A = (1 << WGM21);
     TCCR2B = 0;
