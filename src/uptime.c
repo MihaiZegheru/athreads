@@ -3,6 +3,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "debug.h"
+
 #define EVENTS_COUNT 1
 
 volatile uint32_t g_uptime_ms = 0;
@@ -50,10 +52,17 @@ uint32_t uptime_ms(void) {
 }
 
 void uptime_register_event(void (*event)(void), uint32_t delay_ms) {
+    uint8_t sreg = SREG;
+    cli();
+
     if (s_event_count >= EVENTS_COUNT) {
+        SREG = sreg;
         return;
     }
+
     s_events[s_event_count] = event;
     s_event_delays[s_event_count] = delay_ms;
     s_event_count++;
+
+    SREG = sreg;
 }

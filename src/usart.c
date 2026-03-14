@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <avr/interrupt.h>
+
 #define IO_BUFF_SIZE 64
 
 char USART0_pbuff[IO_BUFF_SIZE];
@@ -26,7 +28,13 @@ char USART0_rx() {
     return UDR0;
 }
 
+// TODO: Make a synchronous version of this function that doesn't disable interrupts and instead
+// uses a mutex or something similar to protect the buffer
+
 int USART0_printf(const char *fmt, ...) {
+    uint8_t sreg = SREG;
+    cli();
+
     va_list args;
     va_start(args, fmt);
 
@@ -38,6 +46,8 @@ int USART0_printf(const char *fmt, ...) {
     while (*src) {
         USART0_tx(*src++);
     }
+
+    SREG = sreg;
     
     return len;
 }

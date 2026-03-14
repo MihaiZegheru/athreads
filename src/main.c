@@ -3,11 +3,15 @@
 #include "athread.h"
 #include "debug.h"
 
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
 #define CLOCK_SPEED 16000000UL
 #define BAUD 9600
 #define MYUBRR (CLOCK_SPEED / 16 / BAUD - 1)
 
-volatile static uint8_t s_flag = 0;
+static volatile uint8_t s_flag = 0;
+
 uint8_t tids[8] = {1, 2, 3, 4, 5, 6, 7, 8};
 
 void timer_event() {
@@ -23,7 +27,7 @@ static void dummy_thread(void *info) {
         if (i % 1000 == 0) {
             LOG_INFO("Thread %d running: %u", id, i);
         }
-        athread_yield();
+        // athread_yield();
     }
 }
 
@@ -56,7 +60,8 @@ static void main_thread(void *info) {
             s_flag = 0;
             LOG_INFO("Uptime: %lu ms", uptime_ms());
         }
-        athread_yield();
+        // athread_yield();
+
     }
 }
 

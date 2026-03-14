@@ -16,6 +16,7 @@ typedef struct __attribute__((aligned(2))) {
     uint8_t tid;
     uint8_t state;
     uint8_t started;
+    uint8_t wake_ticks;
 } athread_layout_t;
 #endif
 

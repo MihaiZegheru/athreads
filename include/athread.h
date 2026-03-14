@@ -46,6 +46,7 @@ typedef struct __attribute__((aligned(2))) {
     athread_state_t state;
 
     uint8_t started;
+    uint8_t wake_ticks;
 } athread_t;
 
 /**
@@ -79,5 +80,8 @@ void athread_yield(void);
  * Thread entry wrapper that is called when a thread starts running.
  */
 void athread_bootstrap(void);
+
+void athread_tick(void);
+
 
 #endif // ATHREAD_H__
