@@ -83,5 +83,13 @@ void athread_bootstrap(void);
 
 void athread_tick(void);
 
+/**
+ * Gets the thread ID of the currently running thread.
+ * 
+ * @note This function disables interrupts and re-enables them before returning.
+ * @return The thread ID of the currently running thread.
+ */
+uint8_t athread_get_current_tid(void);
+
 
 #endif // ATHREAD_H__

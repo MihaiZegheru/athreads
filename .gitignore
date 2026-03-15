@@ -63,3 +63,7 @@ dkms.conf
 
 # editor files
 .vscode/
+
+# trace files
+trace_output/
+tools/FlameGraph/

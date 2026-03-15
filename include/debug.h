@@ -3,17 +3,22 @@
 
 #include "usart.h"
 
+#ifdef INFO
 #define LOG_INFO(fmt, ...) do { \
-    USART0_printf("[INFO] " fmt "\r\n", ##__VA_ARGS__); \
+    usart_printf("[INFO] " fmt "\r\n", ##__VA_ARGS__); \
 } while(0)
 
 #define LOG_ERROR(fmt, ...) do { \
-    USART0_printf("[ERROR] " fmt "\r\n", ##__VA_ARGS__); \
+    usart_printf("[ERROR] " fmt "\r\n", ##__VA_ARGS__); \
 } while(0)
+#else
+#define LOG_INFO(fmt, ...) do { } while(0)
+#define LOG_ERROR(fmt, ...) do { } while(0)
+#endif
 
 #ifdef DEBUG
 #define LOG_DEBUG(fmt, ...) do { \
-    USART0_printf("[DEBUG] " fmt "\r\n", ##__VA_ARGS__); \
+    usart_printf("[DEBUG] " fmt "\r\n", ##__VA_ARGS__); \
 } while(0)
 #else
 #define LOG_DEBUG(fmt, ...) do { } while(0)

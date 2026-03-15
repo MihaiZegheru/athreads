@@ -7,21 +7,26 @@
 /*
  * Initialises serial communication.
  */
-void USART0_init(uint16_t  ubrr);
+void usart_init(uint16_t  ubrr);
 
 /*
  * Transmits a character through USART.
  */
-void USART0_tx(char data);
+void usart_tx(char data);
 
 /*
  * Receives a character through USART
  */
-char USART0_rx();
+char usart_rx();
 
 /*
  * Writes a formatted string of chars through USART.
  */
-int USART0_printf(const char *fmt, ...); 
+int usart_printf(const char *fmt, ...);
+
+/*
+ * Sends an array of bytes through USART.
+ */
+void usart_send_bytes(uint8_t *data, uint8_t len);
 
 #endif // USART_H__

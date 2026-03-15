@@ -17,7 +17,7 @@ static uint8_t s_event_count = 0;
  * Timer2 Compare Match A interrupt service routine. This is called every 1 ms.
  * It increments the uptime counter and checks if any registered events need to be triggered.
  */
-ISR(TIMER2_COMPA_vect) {
+ISR(TIMER2_COMPA_vect, __attribute__((no_instrument_function))) {
     g_uptime_ms++;
 
     for (uint8_t i = 0; i < s_event_count; i++) {
@@ -43,6 +43,7 @@ void uptime_init(void) {
     sei();
 }
 
+__attribute__((no_instrument_function))
 uint32_t uptime_ms(void) {
     uint8_t sreg = SREG;
     cli();

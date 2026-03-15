@@ -6,8 +6,8 @@
 
 #include "debug.h"
 
-#define MAX_THREADS 8
-#define STACK_SIZE  512
+#define MAX_THREADS 4
+#define STACK_SIZE  1024
 #define IDLE_TID    0
 
 volatile athread_t threads[MAX_THREADS];
@@ -22,6 +22,15 @@ static void athread_timer_init(void);
 
 void athread_start_asm(void);
 void athread_isr(void);
+
+__attribute__((no_instrument_function))
+uint8_t athread_get_current_tid(void) {
+	uint8_t sreg = SREG;
+	cli();
+	uint8_t tid = current_tid;
+	SREG = sreg;
+	return tid;
+}
 
 static void athread_create_internal(uint8_t tid, athread_entry_t entry) {
 	uint8_t sreg = SREG;
@@ -150,6 +159,6 @@ static void athread_timer_init(void) {
 	TIMSK1 = (1 << OCIE1A);
 }
 
-ISR(TIMER1_COMPA_vect) {
+ISR(TIMER1_COMPA_vect, __attribute__((no_instrument_function))) {
 	athread_isr();
 }
