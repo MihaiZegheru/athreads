@@ -14,7 +14,7 @@ BAUD = 115200
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ELF = PROJECT_ROOT / ".pio" / "build" / "megaatmega2560" / "firmware.elf"
 AVR_NM = Path.home() / ".platformio" / "packages" / "toolchain-atmelavr" / "bin" / "avr-nm.exe"
-FLAMEGRAPH_PL = PROJECT_ROOT / "tools" / "FlameGraph" / "flamegraph.pl"
+FLAMEGRAPH_PL = PROJECT_ROOT / "lib" / "FlameGraph" / "flamegraph.pl"
 PERL = "perl"  # or r"C:\Strawberry\perl\bin\perl.exe"
 
 # C side:
