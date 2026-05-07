@@ -1,6 +1,6 @@
-#include "encoder.h"
+#include "ui/encoder.h"
 
-#include "athread.h"
+#include "athread/athread.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>

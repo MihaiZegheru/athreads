@@ -1,7 +1,7 @@
 #ifndef DEBUG_H__
 #define DEBUG_H__
 
-#include "usart.h"
+#include "platform/usart.h"
 
 #ifdef INFO
 #define LOG_INFO(fmt, ...) do { \

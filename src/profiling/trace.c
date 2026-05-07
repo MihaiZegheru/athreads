@@ -1,11 +1,11 @@
-#include "trace.h"
+#include "profiling/trace.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
 
-#include "athread.h"
-#include "uptime.h"
+#include "athread/athread.h"
+#include "platform/uptime.h"
 
 #define TRACE_SIZE 400
 

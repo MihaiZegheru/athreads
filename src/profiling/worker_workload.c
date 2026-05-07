@@ -1,4 +1,4 @@
-#include "worker_workload.h"
+#include "profiling/worker_workload.h"
 
 #include <stdint.h>
 #include <avr/interrupt.h>

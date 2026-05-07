@@ -1,9 +1,9 @@
-#include "worker_demo.h"
+#include "profiling/worker_demo.h"
 
-#include "athread.h"
-#include "encoder.h"
-#include "worker_workload.h"
-#include "uptime.h"
+#include "athread/athread.h"
+#include "ui/encoder.h"
+#include "profiling/worker_workload.h"
+#include "platform/uptime.h"
 
 #include <avr/io.h>
 

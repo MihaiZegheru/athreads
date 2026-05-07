@@ -1,7 +1,7 @@
-#include "spi_screen.h"
+#include "ui/spi_screen.h"
 
-#include "athread.h"
-#include "encoder.h"
+#include "athread/athread.h"
+#include "ui/encoder.h"
 
 #include <avr/io.h>
 #include <stdint.h>

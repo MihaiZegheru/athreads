@@ -1,10 +1,10 @@
-#include "uptime.h"
+#include "platform/uptime.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#include "debug.h"
-#include "encoder.h"
+#include "platform/debug.h"
+#include "ui/encoder.h"
 
 #define EVENTS_COUNT 1
 

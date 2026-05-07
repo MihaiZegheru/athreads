@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "athread.h"
+#include "athread/athread.h"
 
 #if defined(__AVR__)
 typedef athread_t athread_layout_t;
@@ -47,6 +47,6 @@ static int write_offsets(const char *out_path) {
 }
 
 int main(void) {
-    const char *out_path = "include/athread_offsets.h";
+    const char *out_path = "include/athread/athread_offsets.h";
     return write_offsets(out_path);
 }

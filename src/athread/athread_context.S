@@ -1,6 +1,6 @@
 #include <avr/io.h>
 
-#include "athread_offsets.h"
+#include "athread/athread_offsets.h"
 
     .global athread_yield
     .global athread_start_asm

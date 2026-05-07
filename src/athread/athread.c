@@ -1,10 +1,10 @@
-#include "athread.h"
+#include "athread/athread.h"
 
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#include "debug.h"
+#include "platform/debug.h"
 
 #define MAX_THREADS ATHREAD_MAX_THREADS
 #define IDLE_TID    0

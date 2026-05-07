@@ -1,8 +1,8 @@
-#include "cpu_stats.h"
+#include "profiling/cpu_stats.h"
 
-#include "athread.h"
-#include "uptime.h"
-#include "usart.h"
+#include "athread/athread.h"
+#include "platform/uptime.h"
+#include "platform/usart.h"
 
 #include <stdint.h>
 

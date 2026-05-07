@@ -1,11 +1,11 @@
-#include "usart.h"
-#include "uptime.h"
-#include "athread.h"
-#include "debug.h"
-#include "spi_screen.h"
-#include "encoder.h"
-#include "cpu_stats.h"
-#include "worker_demo.h"
+#include "platform/usart.h"
+#include "platform/uptime.h"
+#include "athread/athread.h"
+#include "platform/debug.h"
+#include "ui/spi_screen.h"
+#include "ui/encoder.h"
+#include "profiling/cpu_stats.h"
+#include "profiling/worker_demo.h"
 
 #define CLOCK_SPEED 16000000UL
 #define BAUD 115200
