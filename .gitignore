@@ -74,3 +74,6 @@ lib/
 __pycache__/
 *.pyc
 *.pyo
+
+# Tools
+tools/run_cpu_task_manager.bat
