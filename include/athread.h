@@ -5,6 +5,8 @@
 #include <stdint.h>
 
 #define ATHREAD_INVALID_TID 0xFF
+#define ATHREAD_MIN_QUANTUM_TICKS 1
+#define ATHREAD_MAX_THREADS 8
 
 typedef void (*athread_entry_t)(void*);
 
@@ -72,9 +74,46 @@ void athread_start(void);
 uint8_t athread_create(athread_entry_t entry, void *info);
 
 /**
+ * Sets how many scheduler timer ticks a thread may run before the preemptive
+ * scheduler rotates to the next ready thread.
+ *
+ * @param tid The thread ID to update.
+ * @param quantum_ticks Number of timer ticks; values below 1 are clamped to 1.
+ * @return 1 on success, 0 if the TID is invalid or unused.
+ */
+uint8_t athread_set_quantum(uint8_t tid, uint8_t quantum_ticks) __attribute__((no_instrument_function));
+
+/**
+ * Reads the configured quantum for a thread.
+ *
+ * @param tid The thread ID to inspect.
+ * @return The thread quantum in scheduler timer ticks, or 0 for invalid/unused TIDs.
+ */
+uint8_t athread_get_quantum(uint8_t tid) __attribute__((no_instrument_function));
+
+/**
+ * Returns the number of allocated thread IDs, including the idle thread.
+ */
+uint8_t athread_get_thread_count(void) __attribute__((no_instrument_function));
+
+/**
+ * Copies cumulative scheduler timer ticks per thread into out_ticks.
+ *
+ * @param out_ticks Array with at least ATHREAD_MAX_THREADS elements.
+ * @param max_ticks Number of elements available in out_ticks.
+ * @return Number of copied thread counters.
+ */
+uint8_t athread_get_cpu_ticks(uint32_t *out_ticks, uint8_t max_ticks) __attribute__((no_instrument_function));
+
+/**
  * Yields the currently running thread, allowing the scheduler to switch to another ready thread.
  */
 void athread_yield(void);
+
+/**
+ * Puts the current thread to sleep for the given number of scheduler ticks.
+ */
+void athread_sleep_ticks(uint8_t ticks);
 
 /**
  * Thread entry wrapper that is called when a thread starts running.
@@ -90,6 +129,5 @@ void athread_tick(void);
  * @return The thread ID of the currently running thread.
  */
 uint8_t athread_get_current_tid(void);
-
 
 #endif // ATHREAD_H__

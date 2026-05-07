@@ -1,4 +1,4 @@
-#include "flame_demo.h"
+#include "worker_workload.h"
 
 #include <stdint.h>
 #include <avr/interrupt.h>
@@ -318,7 +318,7 @@ static void worker_iteration(uint16_t iter, uint8_t tid_hint) {
     }
 }
 
-void flame_demo_work(uint8_t tid) {
+void worker_workload_run(uint8_t tid) {
     static uint16_t iter = 0;
 
     for (uint8_t i = 0; i < 4; i++) {

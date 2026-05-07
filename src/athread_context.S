@@ -12,6 +12,8 @@
     .extern threads
     .extern athread_bootstrap
     .extern athread_tick
+    .extern athread_quantum_should_switch
+    .extern athread_on_thread_selected
 .text
 
 athread_start_asm:
@@ -208,6 +210,9 @@ candidate_in_range:
     brne find_next_thread
 
     sts  current_tid, r18
+    mov  r24, r18
+    call athread_on_thread_selected
+    lds  r18, current_tid
 
 ; set selected thread state to running
     mov  r30, r18
@@ -455,6 +460,12 @@ athread_isr:
 isr_state_done:
 
     call athread_tick
+    call athread_quantum_should_switch
+    tst  r24
+    brne do_switch_isr
+
+    lds  r18, current_tid
+    rjmp selected_tid_ready_isr
 
 do_switch_isr:
     lds  r18, current_tid
@@ -489,7 +500,11 @@ candidate_in_range_isr:
     brne find_next_thread_isr
 
     sts  current_tid, r18
+    mov  r24, r18
+    call athread_on_thread_selected
+    lds  r18, current_tid
 
+selected_tid_ready_isr:
 ; set selected thread state to running
     mov  r30, r18
     ldi  r31, 0

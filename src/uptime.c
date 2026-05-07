@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 
 #include "debug.h"
+#include "encoder.h"
 
 #define EVENTS_COUNT 1
 
@@ -19,6 +20,7 @@ static uint8_t s_event_count = 0;
  */
 ISR(TIMER2_COMPA_vect, __attribute__((no_instrument_function))) {
     g_uptime_ms++;
+    encoder_poll_tick();
 
     for (uint8_t i = 0; i < s_event_count; i++) {
         if (g_uptime_ms % s_event_delays[i] == 0) {
