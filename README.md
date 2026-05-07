@@ -116,13 +116,10 @@ before uploading.
 After the firmware is running, start the Task Manager-style viewer:
 
 ```powershell
-tools\run_cpu_task_manager.bat --port COM3
+python ./tools/cpu_task_manager.py --port COM3
 ```
 
 Change `COM3` if your Mega appears on another port.
-
-The launcher uses MSYS2 UCRT Python because the regular Windows Python
-installation on this machine did not include Tkinter.
 
 ## Scheduler Notes
 
