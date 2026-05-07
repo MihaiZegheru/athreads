@@ -69,3 +69,8 @@ trace_output/
 
 # external tools
 lib/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
