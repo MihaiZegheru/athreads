@@ -302,10 +302,6 @@ void athread_bootstrap(void) {
 }
 
 void athread_tick(void) {
-
-	// TODO: Add custom waiting amount for each thread. For now this will only wake up sleeping
-	// threads that have voluntarily called sleep (not implemented yet).
-
 	for (uint8_t i = 0; i < thread_count; i++) {
 		if (threads[i].state == TS_SLEEPING) {
 			if (threads[i].wake_ticks > 0) {
