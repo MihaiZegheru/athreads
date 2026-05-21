@@ -13,6 +13,11 @@ static uint8_t s_worker3_tid_hint = 6;
 static uint8_t s_worker4_tid_hint = 7;
 static uint16_t s_worker_rng = 0xACE1u;
 
+#define WORKER1_STACK_SIZE 896
+#define WORKER2_STACK_SIZE 896
+#define WORKER3_STACK_SIZE 512
+#define WORKER4_STACK_SIZE 384
+
 static uint16_t worker_runtime_noise(uint8_t tid_hint, uint16_t rng) {
     uint16_t noise = (uint16_t)TCNT1;
     noise ^= (uint16_t)((uint16_t)TCNT2 << 8);
@@ -116,10 +121,10 @@ void worker_demo_thread(void *info) {
 }
 
 void worker_demo_create_threads(void) {
-    uint8_t worker1_thread_tid = athread_create(worker_demo_thread, &s_worker1_tid_hint);
-    uint8_t worker2_thread_tid = athread_create(worker_demo_thread, &s_worker2_tid_hint);
-    uint8_t worker3_thread_tid = athread_create(worker_demo_thread, &s_worker3_tid_hint);
-    uint8_t worker4_thread_tid = athread_create(worker_demo_thread, &s_worker4_tid_hint);
+    uint8_t worker1_thread_tid = athread_create(worker_demo_thread, &s_worker1_tid_hint, WORKER1_STACK_SIZE);
+    uint8_t worker2_thread_tid = athread_create(worker_demo_thread, &s_worker2_tid_hint, WORKER2_STACK_SIZE);
+    uint8_t worker3_thread_tid = athread_create(worker_demo_thread, &s_worker3_tid_hint, WORKER3_STACK_SIZE);
+    uint8_t worker4_thread_tid = athread_create(worker_demo_thread, &s_worker4_tid_hint, WORKER4_STACK_SIZE);
 
     (void)worker1_thread_tid;
     (void)worker2_thread_tid;

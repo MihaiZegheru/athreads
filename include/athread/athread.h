@@ -7,6 +7,11 @@
 #define ATHREAD_INVALID_TID 0xFF
 #define ATHREAD_MIN_QUANTUM_TICKS 1
 #define ATHREAD_MAX_THREADS 8
+#define ATHREAD_MIN_STACK_SIZE 64
+
+#ifndef ATHREAD_STACK_POOL_SIZE
+#define ATHREAD_STACK_POOL_SIZE 3904
+#endif
 
 typedef void (*athread_entry_t)(void*);
 
@@ -63,15 +68,18 @@ void athread_init(void);
 void athread_start(void);
 
 /**
- * Creates a new thread with the given entry function. If the entry function is null or the
- * maximum number of threads has been reached, the function will return ATHREAD_INVALID_TID
- * without creating a thread. Otherwise, it will return the thread ID.
+ * Creates a new thread with the given entry function and stack size. The stack
+ * is allocated from the athread stack pool at runtime. If the entry function is
+ * null, the stack size is zero, the maximum number of threads has been reached,
+ * or the stack pool does not have enough free space, the function returns
+ * ATHREAD_INVALID_TID.
  * 
  * @param entry The function that the thread will execute when it runs.
  * @param info A pointer to the information that will be passed to the thread's entry function.
+ * @param stack_size Stack size in bytes. Values below ATHREAD_MIN_STACK_SIZE are clamped.
  * @return The thread ID if successful, or ATHREAD_INVALID_TID if failed.
  */
-uint8_t athread_create(athread_entry_t entry, void *info);
+uint8_t athread_create(athread_entry_t entry, void *info, uint16_t stack_size);
 
 /**
  * Sets how many scheduler timer ticks a thread may run before the preemptive

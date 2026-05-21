@@ -1,0 +1,118 @@
+<svg width="1200" height="840" viewBox="0 0 1200 840" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #0b1020; }
+      .panel { fill: #111827; stroke: #334155; stroke-width: 2; }
+      .module { fill: #172033; stroke: #475569; stroke-width: 2; }
+      .core { fill: #0f2a3a; stroke: #22d3ee; stroke-width: 3; }
+      .hw { fill: #1f2937; stroke: #64748b; stroke-width: 2; }
+      .text { fill: #e5e7eb; font-family: Segoe UI, Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .small { fill: #cbd5e1; font-family: Segoe UI, Arial, sans-serif; font-size: 16px; font-weight: 500; }
+      .tiny { fill: #94a3b8; font-family: Segoe UI, Arial, sans-serif; font-size: 14px; }
+      .cyan { fill: #22d3ee; }
+      .green { fill: #34d399; }
+      .orange { fill: #f59e0b; }
+      .purple { fill: #a78bfa; }
+      .red { fill: #fb7185; }
+      .arrow { stroke: #94a3b8; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .arrowCyan { stroke: #22d3ee; stroke-width: 3; fill: none; marker-end: url(#arrowCyan); }
+      .dash { stroke: #64748b; stroke-width: 2; stroke-dasharray: 8 7; fill: none; marker-end: url(#arrow); }
+    </style>
+
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#94a3b8"/>
+    </marker>
+
+    <marker id="arrowCyan" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#22d3ee"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="840"/>
+
+  <text class="text" x="50" y="55">athreads System Block Diagram</text>
+  <text class="small" x="50" y="84">Preemptive scheduler library with optional TFT UI and USART profiling</text>
+
+  <rect class="panel" x="50" y="150" width="270" height="210" rx="18"/>
+  <text class="text" x="80" y="190">PC / Laptop</text>
+
+  <rect class="module" x="80" y="225" width="210" height="95" rx="14"/>
+  <circle class="cyan" cx="105" cy="255" r="8"/>
+  <text class="small" x="125" y="260">Python CPU Profiler</text>
+  <text class="tiny" x="105" y="285">Tkinter live graph</text>
+  <text class="tiny" x="105" y="305">Reads USART packets</text>
+
+  <rect class="panel" x="410" y="130" width="740" height="570" rx="20"/>
+  <text class="text" x="450" y="172">Arduino Mega 2560</text>
+  <text class="small" x="450" y="200">ATmega2560, 16 MHz, 8-bit AVR</text>
+
+  <rect class="core" x="455" y="250" width="320" height="240" rx="16"/>
+  <text class="text" x="490" y="292">athreads Scheduler</text>
+
+  <circle class="cyan" cx="490" cy="330" r="6"/>
+  <text class="small" x="510" y="336">Thread table</text>
+
+  <circle class="cyan" cx="490" cy="362" r="6"/>
+  <text class="small" x="510" y="368">Runtime stack pool</text>
+
+  <circle class="cyan" cx="490" cy="394" r="6"/>
+  <text class="small" x="510" y="400">Context switch ASM</text>
+
+  <circle class="cyan" cx="490" cy="426" r="6"/>
+  <text class="small" x="510" y="432">Per-thread quanta</text>
+
+  <circle class="cyan" cx="490" cy="458" r="6"/>
+  <text class="small" x="510" y="464">CPU tick accounting</text>
+
+  <rect class="module" x="840" y="250" width="230" height="85" rx="14"/>
+  <circle class="orange" cx="870" cy="284" r="8"/>
+  <text class="small" x="890" y="289">Timer1</text>
+  <text class="tiny" x="870" y="315">Preemption interrupt</text>
+
+  <rect class="module" x="840" y="375" width="230" height="85" rx="14"/>
+  <circle class="green" cx="870" cy="409" r="8"/>
+  <text class="small" x="890" y="414">Timer2</text>
+  <text class="tiny" x="870" y="440">Uptime and debounce tick</text>
+
+  <rect class="module" x="455" y="535" width="170" height="95" rx="14"/>
+  <circle class="purple" cx="485" cy="570" r="8"/>
+  <text class="small" x="505" y="575">UI Threads</text>
+  <text class="tiny" x="485" y="602">T2 ENC, T3 TFT</text>
+
+  <rect class="module" x="675" y="535" width="190" height="95" rx="14"/>
+  <circle class="red" cx="705" cy="570" r="8"/>
+  <text class="small" x="725" y="575">Worker Threads</text>
+  <text class="tiny" x="705" y="602">T4 - T7 workloads</text>
+
+  <rect class="module" x="915" y="535" width="170" height="95" rx="14"/>
+  <circle class="cyan" cx="945" cy="570" r="8"/>
+  <text class="small" x="965" y="575">Main Thread</text>
+  <text class="tiny" x="945" y="602">Telemetry control</text>
+
+  <rect class="hw" x="455" y="710" width="170" height="55" rx="14"/>
+  <text class="small" x="505" y="744">ST7735 TFT</text>
+
+  <rect class="hw" x="675" y="710" width="190" height="55" rx="14"/>
+  <text class="small" x="715" y="744">Rotary Encoder</text>
+
+  <rect class="module" x="910" y="700" width="230" height="105" rx="14"/>
+  <text class="small" x="935" y="728">Interfaces</text>
+  <text class="tiny" x="935" y="752">SPI: TFT display</text>
+  <text class="tiny" x="935" y="774">GPIO: encoder input</text>
+  <text class="tiny" x="935" y="796">USART: CPU samples</text>
+
+  <path class="arrowCyan" d="M320 272 L410 272"/>
+  <path class="arrowCyan" d="M775 292 L840 292"/>
+  <path class="arrowCyan" d="M775 417 L840 417"/>
+
+  <path class="arrow" d="M540 535 L540 490"/>
+  <path class="arrow" d="M770 535 L690 490"/>
+  <path class="arrow" d="M985 535 L760 470"/>
+
+  <path class="arrow" d="M540 710 L540 630"/>
+  <path class="arrow" d="M770 710 L565 630"/>
+
+  <path class="dash" d="M915 582 C760 690 430 640 290 315"/>
+
+  <text class="tiny" x="50" y="812">TFT and encoder are demo modules. The reusable component is the athreads preemptive scheduling library.</text>
+</svg>

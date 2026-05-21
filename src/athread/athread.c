@@ -10,26 +10,13 @@
 #define IDLE_TID    0
 
 #define IDLE_STACK_SIZE    192
-#define MAIN_STACK_SIZE    320
-#define ENCODER_STACK_SIZE 192
-#define OLED_STACK_SIZE    512
-#define WORK_STACK_SIZE    896
-#define WORK2_STACK_SIZE   896
-#define WORK3_STACK_SIZE   512
-#define WORK4_STACK_SIZE   384
 
 volatile athread_t threads[MAX_THREADS];
 volatile uint8_t   thread_count;
 volatile uint8_t   current_tid;
 
-static uint8_t idle_stack[IDLE_STACK_SIZE];
-static uint8_t main_stack[MAIN_STACK_SIZE];
-static uint8_t encoder_stack[ENCODER_STACK_SIZE];
-static uint8_t oled_stack[OLED_STACK_SIZE];
-static uint8_t work_stack[WORK_STACK_SIZE];
-static uint8_t work2_stack[WORK2_STACK_SIZE];
-static uint8_t work3_stack[WORK3_STACK_SIZE];
-static uint8_t work4_stack[WORK4_STACK_SIZE];
+static uint8_t stack_pool[ATHREAD_STACK_POOL_SIZE];
+static uint16_t stack_pool_used;
 static void *athread_info[MAX_THREADS];
 static volatile uint8_t thread_quantum_ticks[MAX_THREADS];
 static volatile uint8_t thread_remaining_ticks[MAX_THREADS];
@@ -44,33 +31,24 @@ void athread_start_asm(void);
 void athread_isr(void);
 
 __attribute__((no_instrument_function))
-static uint8_t *athread_stack_base(uint8_t tid) {
-	switch (tid) {
-		case 0: return idle_stack;
-		case 1: return main_stack;
-		case 2: return encoder_stack;
-		case 3: return oled_stack;
-		case 4: return work_stack;
-		case 5: return work2_stack;
-		case 6: return work3_stack;
-		case 7: return work4_stack;
-		default: return idle_stack;
+static uint16_t athread_align_stack_size(uint16_t stack_size) {
+	if (stack_size < ATHREAD_MIN_STACK_SIZE) {
+		stack_size = ATHREAD_MIN_STACK_SIZE;
 	}
+	return (uint16_t)((stack_size + 1u) & (uint16_t)~1u);
 }
 
 __attribute__((no_instrument_function))
-static uint16_t athread_stack_size(uint8_t tid) {
-	switch (tid) {
-		case 0: return IDLE_STACK_SIZE;
-		case 1: return MAIN_STACK_SIZE;
-		case 2: return ENCODER_STACK_SIZE;
-		case 3: return OLED_STACK_SIZE;
-		case 4: return WORK_STACK_SIZE;
-		case 5: return WORK2_STACK_SIZE;
-		case 6: return WORK3_STACK_SIZE;
-		case 7: return WORK4_STACK_SIZE;
-		default: return IDLE_STACK_SIZE;
+static uint8_t *athread_alloc_stack(uint16_t stack_size) {
+	stack_size = athread_align_stack_size(stack_size);
+
+	if ((uint32_t)stack_pool_used + stack_size > ATHREAD_STACK_POOL_SIZE) {
+		return 0;
 	}
+
+	uint8_t *stack = &stack_pool[stack_pool_used];
+	stack_pool_used = (uint16_t)(stack_pool_used + stack_size);
+	return stack;
 }
 
 __attribute__((no_instrument_function))
@@ -82,12 +60,13 @@ uint8_t athread_get_current_tid(void) {
 	return tid;
 }
 
-static void athread_create_internal(uint8_t tid, athread_entry_t entry) {
-	uint8_t sreg = SREG;
-	cli();
-	uint8_t *stack = athread_stack_base(tid);
-	uint16_t stack_size = athread_stack_size(tid);
-
+static uint8_t athread_create_internal(uint8_t tid, athread_entry_t entry, uint16_t stack_size) {
+	stack_size = athread_align_stack_size(stack_size);
+	uint8_t *stack = athread_alloc_stack(stack_size);
+	if (stack == 0) {
+		return 0;
+	}
+	
     threads[tid] = (athread_t){
         .entry = entry,
         .sp = (uint16_t)&stack[stack_size - 1],
@@ -99,32 +78,31 @@ static void athread_create_internal(uint8_t tid, athread_entry_t entry) {
     };
 	thread_quantum_ticks[tid] = ATHREAD_MIN_QUANTUM_TICKS;
 	thread_remaining_ticks[tid] = ATHREAD_MIN_QUANTUM_TICKS;
-
-	SREG = sreg;
+	return 1;
 }
 
 void athread_init(void) {
 	thread_count = 1;
 	current_tid = IDLE_TID;
+	stack_pool_used = 0;
 
 	for (uint8_t i = 0; i < MAX_THREADS; i++) {
-		uint8_t *stack = athread_stack_base(i);
-		uint16_t stack_size = athread_stack_size(i);
         threads[i] = (athread_t){
             .entry = 0,
             .sp = 0,
-            .stack_low = (uint16_t)&stack[0],
-            .stack_high = (uint16_t)&stack[stack_size - 1],
+            .stack_low = 0,
+            .stack_high = 0,
             .tid = i,
             .state = TS_UNUSED,
             .wake_ticks = 0
         };
+		athread_info[i] = 0;
 		thread_quantum_ticks[i] = ATHREAD_MIN_QUANTUM_TICKS;
 		thread_remaining_ticks[i] = ATHREAD_MIN_QUANTUM_TICKS;
 		thread_cpu_ticks[i] = 0;
 	}
 
-	athread_create_internal(IDLE_TID, athread_idle);
+	(void)athread_create_internal(IDLE_TID, athread_idle, IDLE_STACK_SIZE);
 }
 
 /**
@@ -153,18 +131,23 @@ void athread_start(void) {
 	athread_start_asm();
 }
 
-uint8_t athread_create(athread_entry_t entry, void *info) {
+uint8_t athread_create(athread_entry_t entry, void *info, uint16_t stack_size) {
 	uint8_t sreg = SREG;
 	cli();
 
-	if (entry == 0 || thread_count >= MAX_THREADS) {
+	if (entry == 0 || stack_size == 0 || thread_count >= MAX_THREADS) {
 		SREG = sreg;
 		return ATHREAD_INVALID_TID;
 	}
 
-    uint8_t tid = thread_count++;
+    uint8_t tid = thread_count;
+	if (!athread_create_internal(tid, entry, stack_size)) {
+		SREG = sreg;
+		return ATHREAD_INVALID_TID;
+	}
+
+	thread_count++;
     athread_info[tid] = info;
-    athread_create_internal(tid, entry);
 
 	SREG = sreg;
 	LOG_DEBUG("Created thread %u", tid);
@@ -293,8 +276,6 @@ void athread_bootstrap(void) {
 	}
 
 	threads[current_tid].state = TS_ZOMBIE;
-
-    // TODO: Handle joining logic.
 
 	for (;;) {
 		athread_yield();

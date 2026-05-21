@@ -75,7 +75,7 @@ The scheduler API is exposed from `include/athread/athread.h`.
 void athread_init(void);
 void athread_start(void);
 
-uint8_t athread_create(athread_entry_t entry, void *info);
+uint8_t athread_create(athread_entry_t entry, void *info, uint16_t stack_size);
 
 void athread_yield(void);
 void athread_sleep_ticks(uint8_t ticks);
@@ -92,14 +92,16 @@ void athread_bootstrap(void);
 
 Most application code uses `athread_init()`, `athread_create()`,
 `athread_start()`, `athread_yield()`, `athread_sleep_ticks()`, and the quantum
-or profiling accessors. `athread_tick()` and `athread_bootstrap()` are exported
-runtime hooks used by the platform timer and thread startup path.
+or profiling accessors. Each thread receives its stack from the scheduler stack
+pool, and the caller chooses the stack size when creating the thread.
+`athread_tick()` and `athread_bootstrap()` are exported runtime hooks used by
+the platform timer and thread startup path.
 
 | Function | Description |
 | --- | --- |
 | `athread_init()` | Initializes scheduler state, creates the idle thread, and prepares the timer/context-switching machinery. Call this before creating application threads. |
 | `athread_start()` | Starts the scheduler and transfers execution to scheduled threads. This does not return during normal operation. |
-| `athread_create(entry, info)` | Allocates a thread slot, initializes its stack/context, stores the entry function and argument pointer, and returns the new thread ID. Returns `ATHREAD_INVALID_TID` on failure. |
+| `athread_create(entry, info, stack_size)` | Allocates a thread slot, reserves `stack_size` bytes from the scheduler stack pool, initializes its stack/context, stores the entry function and argument pointer, and returns the new thread ID. Returns `ATHREAD_INVALID_TID` on failure. |
 | `athread_yield()` | Voluntarily gives up the CPU and asks the scheduler to run another ready thread. Useful when a thread finishes a unit of work before its quantum expires. |
 | `athread_sleep_ticks(ticks)` | Puts the current thread to sleep for a number of scheduler ticks. Sleeping threads do not consume CPU until their wake tick expires. |
 | `athread_set_quantum(tid, quantum_ticks)` | Updates how many scheduler ticks a thread may run before preemption. Values below `ATHREAD_MIN_QUANTUM_TICKS` are clamped. |

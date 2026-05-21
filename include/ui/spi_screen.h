@@ -2,9 +2,9 @@
 #define SPI_SCREEN_H__
 
 /**
- * Thread entry for the SPI OLED menu process.
+ * Thread entry for the SPI TFT menu process.
  *
- * Initializes the SSD1306 display and renders the scheduler process menu. The
+ * Initializes the ST7735 display and renders the scheduler process menu. The
  * rotary encoder is used to select a thread and edit its quantum through the
  * scheduler API.
  *
@@ -13,7 +13,7 @@
 void spi_screen_thread(void *info) __attribute__((no_instrument_function));
 
 /**
- * Runs the SPI OLED menu without creating a scheduler thread.
+ * Runs the SPI TFT menu without creating a scheduler thread.
  *
  * This helper is useful for display bring-up tests where the screen process
  * should own execution directly.

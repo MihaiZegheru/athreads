@@ -10,6 +10,9 @@
 #define CLOCK_SPEED 16000000UL
 #define BAUD 115200
 #define MYUBRR ((CLOCK_SPEED / 8 / BAUD) - 1)
+#define MAIN_THREAD_STACK_SIZE    320
+#define ENCODER_THREAD_STACK_SIZE 192
+#define SCREEN_THREAD_STACK_SIZE  512
 
 static volatile uint8_t s_flag = 0;
 
@@ -25,8 +28,8 @@ static void main_thread(void *info) {
     
     uptime_register_event(timer_event, 250);
     
-    uint8_t encoder_thread_tid = athread_create(encoder_thread, 0);
-    uint8_t screen_thread_tid = athread_create(spi_screen_thread, 0);
+    uint8_t encoder_thread_tid = athread_create(encoder_thread, 0, ENCODER_THREAD_STACK_SIZE);
+    uint8_t screen_thread_tid = athread_create(spi_screen_thread, 0, SCREEN_THREAD_STACK_SIZE);
     worker_demo_create_threads();
 
     (void)encoder_thread_tid;
@@ -49,7 +52,7 @@ int main(void) {
     uptime_init();
 
     athread_init();
-    uint8_t main_thread_tid = athread_create(main_thread, 0);
+    uint8_t main_thread_tid = athread_create(main_thread, 0, MAIN_THREAD_STACK_SIZE);
     (void)main_thread_tid;
     LOG_INFO("Main thread created with TID %u\n", main_thread_tid);
     athread_start(); 
